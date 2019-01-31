@@ -1,0 +1,10 @@
+{
+	"HTTP_PORT": 8080,
+	"url": "jdbc:postgresql://localhost:5432/vertx-book-db",
+	"driver_class": "org.postgresql.Driver",
+	"user": "postgres",
+	"password": "postgres",
+	"max_pool_size": 30,
+	"min_pool_size": 1,
+	"max_idle_time": 300
+}

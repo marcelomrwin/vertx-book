@@ -1,0 +1,25 @@
+FROM oracle/graalvm-ce:1.0.0-rc11 AS build-aot
+
+COPY target/vertx-book.jar app/
+COPY src/main/resources/reflection.json app/
+COPY target/classes app/classes
+
+WORKDIR /app
+
+RUN native-image --enable-all-security-services \
+        -H:+ReportUnsupportedElementsAtRuntime \
+        --allow-incomplete-classpath \
+        --rerun-class-initialization-at-runtime=io.netty.handler.codec.http2.Http2CodecUtil \
+        --delay-class-initialization-to-runtime=io.netty.handler.codec.http.HttpObjectEncoder,io.netty.handler.codec.http2.DefaultHttp2FrameWriter,io.netty.handler.codec.http.websocketx.WebSocket00FrameEncoder,io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator,io.netty.handler.ssl.ReferenceCountedOpenSslEngine \
+        -H:IncludeResources='(META-INF/vertx|META-INF/services|static|webroot|template)/.*' \
+        -H:ReflectionConfigurationFiles=reflection.json \
+        -cp vertx-book.jar -H:Class=com.redhat.httpserver.VertxMain
+
+# Create new image from alpine
+FROM frolvlad/alpine-glibc:alpine-3.8
+RUN apk add --no-cache ca-certificates
+# Copy generated native executable from build-aot
+COPY --from=build-aot /app/com.redhat.httpserver.vertxmain /vertx-book
+COPY --from=build-aot /opt/graalvm-ce-1.0.0-rc11/jre/lib/amd64/libsunec.so /libsunec.so
+# Set the entrypoint
+ENTRYPOINT [ "/vertx-book" ]

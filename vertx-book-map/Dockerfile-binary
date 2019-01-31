@@ -1,0 +1,7 @@
+FROM oracle/graalvm-ce:1.0.0-rc11 AS build-aot
+
+FROM frolvlad/alpine-glibc
+RUN apk add --no-cache ca-certificates
+COPY target/com.redhat.httpserver.vertxmain /vertxmain
+COPY --from=build-aot /opt/graalvm-ce-1.0.0-rc11/jre/lib/amd64/libsunec.so /libsunec.so
+ENTRYPOINT [ "/vertxmain" ]

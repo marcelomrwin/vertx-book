@@ -1,0 +1,25 @@
+[
+	{
+		"name": "java.lang.Class",
+		"allDeclaredConstructors": true,
+		"allPublicConstructors": true,
+		"allDeclaredMethods": true,
+		"allPublicMethods": true
+	},
+	{
+		"name": "java.util.LinkedHashMap",
+		"methods": [
+			{
+				"name": "<init>",
+				"parameterTypes": []
+			}
+		]
+	},
+	{
+		"name": "com.redhat.httpserver.Book",
+		"allDeclaredConstructors": true,
+		"allPublicConstructors": true,
+		"allDeclaredMethods": true,
+		"allPublicMethods": true
+	}
+]
